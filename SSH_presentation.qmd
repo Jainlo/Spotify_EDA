@@ -1,5 +1,5 @@
 ---
-title: "SSH_presentation"
+title: "Spotify Exploratory Dataset Analysis"
 format: 
   revealjs: 
     theme: serif
