@@ -30,13 +30,7 @@ tuesdata <- tidytuesdayR::tt_load('2020-01-21')
 spotify_songs <- tuesdata$spotify_songs
 ```
 
-## New slide
-
-use /heading 2 to create a new slide
-
 # Introduction
-
-## Background
 
 ## Background
 
@@ -133,9 +127,9 @@ clean_data <- spotify_songs %>%
       geom_bar(stat = "identity", position = 'dodge' )
     ```
 
-# EDA
+# Exploratory Data Analysis
 
-## Initial EDA
+## Initial Data Exploration
 
 -   Most popular artists
 
@@ -156,7 +150,7 @@ ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
        coord_flip()
 ```
 
-## Initial EDA
+## Initial Data Exploration
 
 -   Most popular albums
 
@@ -178,20 +172,22 @@ ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
 
     ```
 
-## Initial EDA
+## Initial Data Exploration
 
 -   Most popular genres
 
 ```{r}
 clean_data %>%
   group_by(playlist_genre)%>%
-    ggplot(aes( x = track_popularity, y = playlist_genre ))+
+    ggplot(aes( x = track_popularity, y = playlist_genre, color_palette(rickandmorty) ))+
     geom_density_ridges()+
     scale_x_continuous(limits = c(0, 100)) +
   labs( x = "Popularity", y = "Genre")
 ```
 
-## How feature change within genres
+## Exploratory Data Analysis
+
+How features change within genres
 
 ```{r}
 # Isolate the 12 features
@@ -203,7 +199,8 @@ featuresOnly %>%
   pivot_longer(!c(playlist_genre), names_to = "features")%>%
   ggplot(aes(value))+
   geom_density(aes(color = playlist_genre), alpha = 0.5)+
-  facet_wrap(vars(features), scales="free")
+  facet_wrap(vars(features), scales="free") -> featuresPlot
+ggplotly(featuresPlot)
 ```
 
 ## Latin
@@ -229,8 +226,6 @@ featuresOnly %>%
       geom_boxplot(fill='pink', color="grey")+
       theme_light()
     ```
-
-# Hypothesis testing
 
 ## Release Date
 
@@ -315,3 +310,15 @@ ggplot(by_years5, aes(x = X5, y = Y5)) +
 figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
 ```
+
+# Conclusion
+
+The analysis of the Spotify dataset yielded the following results:
+
+-   Pop and Latin are the top most popular genres.
+
+-   The higher the danceability/ valence, the more positively it correlates to the popularity.
+
+-   Energy and loudness are positively correlated.
+
+-   Energy and acoustics are negativelly correlated.

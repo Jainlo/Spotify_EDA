@@ -285,6 +285,16 @@ Unlike the acoustickness, we can see that there is a major drop in 1960 for popu
 
 ## Conclusion
 
+The analysis of the Spotify dataset yielded the following results:
+
+Pop and Latin are the top most popular genres.
+
+The higher the danceability/ valence, the more positively it correlates to the popularity.
+
+Energy and loudness are positively correlated.
+
+Energy and acoustics are negativelly correlated.
+
 ## References
 
 1.  "<https://www.kaggle.com/code/fpolcari/spotify-songs-popularity-analysis>"
