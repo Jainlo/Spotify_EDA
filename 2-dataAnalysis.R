@@ -7,68 +7,30 @@ library(janitor)
 library(tidytuesdayR)
 library(ggcorrplot)
 library(ggpubr)
+install.packages("GGally")
+library(GGally)
+
 # -------------------------------- #
-# Import the data set
-spotify_songs= read_csv(url("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"))
+source("Documents/1-dataExploration.R")
+# -------------------------------- #
 
-#------------------------ # Data Wrangling # ---------------------#
+# Isolate the 12 features
+spotify_songs %>%
+  select(playlist_genre, !track_id:playlist_subgenre) -> featuresOnly
 
-# Check NA values
-which(is.na(spotify_songs), arr.ind=TRUE)
+# How do features compare between genres
+featuresOnly %>%
+  #filter(playlist_genre %in% popularGenres)%>%
+  #group_by(playlist_genre)%>%
+  pivot_longer(!c(playlist_genre), names_to = "features")%>%
+  ggplot(aes(value))+
+  geom_density(aes(color = playlist_genre), alpha = 0.5)+
+  facet_wrap(vars(features), scales="free")
 
-# Getting  the names of the R data frame columns that contain missing values.
-spotify_songs1 = as.data.frame(cbind(lapply(lapply(spotify_songs, is.na), sum)))
-rownames(subset(spotify_songs1, spotify_songs1$V1 != 0))
+# Break down the features into smaller groups to find correlation(?)
 
-# Removing and keeping the clean data without NA values
-Clean_data=na.omit(spotify_songs)
-
-# ------------------------ # Data Summary # ---------------------#
-# Top 5 Artists
-Top_Artists <- Clean_data %>%
-  group_by(track_artist) %>%
-  summarise(n_apperance = n()) %>%
-  filter(n_apperance > 100) %>%
-  arrange(desc(n_apperance))
-
-Top_Artists$track_artist <- factor(Top_Artists$track_artist, levels = Top_Artists$track_artist [order(Top_Artists$n_apperance)])
-
-ggplot(Top_Artists, aes(x = track_artist, y = n_apperance)) +
-  geom_bar(stat = "identity", width = 0.6,fill = "grey", color="black") +
-  labs(title = "Popular Artists", x = "Artists", y = "Number of Apperances in the list") +
-  theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
-  geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
-  coord_flip()
-
-# Top 5 Albums
-Top_Albums <- Clean_data %>%
-  group_by(track_album_name) %>%
-  summarise(n_apperance = n()) %>%
-  filter(n_apperance >= 29) %>%
-  arrange(desc(n_apperance))
-
-Top_Albums$track_album_name <- factor(Top_Albums$track_album_name, levels = Top_Albums$track_album_name [order(Top_Albums$n_apperance)])
-
-ggplot(Top_Albums, aes(x = track_album_name, y = n_apperance)) +
-  geom_bar(stat = "identity" , width = 0.6,fill = "grey", color="black") +
-  labs(title = "Popular Albums", x = "Albums", y = "Number of Apperances in the list") +
-  theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
-  geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
-  coord_flip()
-
-# The Most Popular Genre
-ggplot(Clean_data) + 
-  geom_bar(mapping = aes(x = playlist_genre), fill = "grey", color="black") + 
-  labs(title = "The Most Popular Genre", x = "Playlist Genre", y = "Number of Genre")+
-  theme(plot.title = element_text(size=15), axis.text = element_text(size = 15), axis.title = element_text(size = 15))
-
-table(Clean_data$playlist_genre)
-# Credit to "https://www.kaggle.com/code/nuyangrai/spotify-songs-analysis"
-
-ggplot(Clean_data, aes(x=energy, y=playlist_genre)) + 
-  geom_boxplot() +
-  geom_boxplot(fill='grey', color="black")+
-  theme_classic()
+# Q3. Which OTHER variable is more correlated with danceability
+ggcorr(select(spotify_songs,danceability:duration_ms), method = c("everything", "pearson")) # valence
 
 # The plot shows that EDM genre has songs with highest energy.
 
