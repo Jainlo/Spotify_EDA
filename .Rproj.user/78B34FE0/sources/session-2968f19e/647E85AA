@@ -1,0 +1,31 @@
+{
+    "id": "647E85AA",
+    "path": "~/Documents/Spotify_EDA/SSH_presentation.qmd",
+    "project_path": "SSH_presentation.qmd",
+    "type": "quarto_markdown",
+    "hash": "3197437136",
+    "contents": "",
+    "dirty": true,
+    "created": 1665587977676.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "rmdVisualMode": "true",
+        "rmdVisualWrapConfigured": "true",
+        "source_window_id": "",
+        "Source": "Source",
+        "docOutlineVisible": "1",
+        "rmdVisualCollapsedChunks": "",
+        "cursorPosition": "89,0",
+        "scrollLine": "38",
+        "rmdVisualModeLocation": "1195:2121"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1665590482,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1665590487603,
+    "read_only": false,
+    "read_only_alternatives": []
+}

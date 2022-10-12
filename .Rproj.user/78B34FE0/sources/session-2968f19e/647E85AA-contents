@@ -87,8 +87,6 @@ names(spotify_songs)
     sum(duplicated(spotify_songs$track_id))
     ```
 
--   
-
 # EDA
 
 # Hypothesis testing
