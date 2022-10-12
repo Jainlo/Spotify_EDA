@@ -1,6 +1,8 @@
 ---
 title: "SSH_presentation"
-format: revealjs
+format: 
+  revealjs: 
+    theme: serif
 editor: visual
 ---
 
@@ -15,7 +17,7 @@ library(GGally)
 ```{r include=FALSE}
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
-source("0-dataMunging.R")
+
 
 # Individual dataframe
 spotify_songs <- tuesdata$spotify_songs
@@ -26,6 +28,8 @@ spotify_songs <- tuesdata$spotify_songs
 use /heading 2 to create a new slide
 
 # Introduction
+
+## Background
 
 ## Background
 

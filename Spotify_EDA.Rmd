@@ -24,14 +24,13 @@ library(ggcorrplot)
 library(ggpubr)
 ```
 
-
 ```{r include=FALSE, message=FALSE}
 spotify_songs= read_csv(url("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"))
 ```
 
 ## Data Munging
 
-To start we check and identified NA values, and remove them to keep only the observations with no missing values. 
+To start we check and identified NA values, and remove them to keep only the observations with no missing values.
 
 ```{r}
 # Check NA values
@@ -100,13 +99,13 @@ clean_data %>%
   
 ```
 
-
 ## Exploratory Data Analysis
 
 After initial exploration of the data, we came up with additional questions:
 
 ### Popularity
-1. Are there any features that could have influence on the popularity of Latin? 
+
+1.  Are there any features that could have influence on the popularity of Latin?
 
 To answer the question we compared features among all genres, we can see that Latin stands out in danceability and valence.
 
@@ -133,7 +132,7 @@ ggplot(clean_data, aes(x=valence, y=playlist_genre)) +
 
 ```
 
-2. What is the most common song features?
+2.  What is the most common song features?
 
 This plot demonstrates that Spotify users favor songs with higher energy levels.
 
@@ -145,7 +144,9 @@ clean_data %>%
              scale_x_discrete(name = "Energy")+
              theme_light()
 ```
+
 While this plot shows how popularity in terms of valence is normally distributed
+
 ```{r fig8, fig.align = "center", out.width = "70%"}
 
 valence_only <- cut(clean_data$valence, breaks = 5)
@@ -158,8 +159,8 @@ clean_data %>%
 ```
 
 ### Correlation
-Next, we're going to study to see if there exists any correlation between energy and loudness and acousticness. 
-We found that there is a positive correlation between energy and loudness, while energy is negatively correlated with acousticness.
+
+Next, we're going to study to see if there exists any correlation between energy and loudness and acousticness. We found that there is a positive correlation between energy and loudness, while energy is negatively correlated with acousticness.
 
 ```{r fig9, fig.height = 10, fig.width = 10, fig.align = "center", out.width = "70%"}
 # Select only numerical variables
@@ -169,7 +170,7 @@ corr <- round(cor(clean_data_numeric),3)
 ggcorrplot(corr, hc.order = TRUE, type = "lower", lab = TRUE)
 ```
 
-1. Does this correlation exist in specifc genres?
+1.  Does this correlation exist in specifc genres?
 
 We can see that there is a correlation between loudness and Energy in most genres and the same for acousticness and Energy.
 
@@ -197,8 +198,9 @@ val_nrgy1 ## Energy & Acoustic. The lower the energy the more the acoustic.
 ```
 
 ### Release Date
-2. Is there a relationship between album release date and popularity?
-3. Are features affected by album release date?
+
+2.  Is there a relationship between album release date and popularity?
+3.  Are features affected by album release date?
 
 ```{r fig11, fig.align = "center", out.width = "70%"}
 Y <- clean_data$acousticness
@@ -224,7 +226,6 @@ ggplot(by_years1, aes(x = X1, y = Y1)) +
        y = "Avg. Loudness") -> g1
 
 ```
-
 
 ```{r}
 Y2 <- clean_data$danceability
@@ -275,7 +276,6 @@ ggplot(by_years5, aes(x = X5, y = Y5)) +
 
 ```
 
-
 ```{r fig13, fig.align = "center", out.width = "70%"}
 figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
@@ -283,16 +283,14 @@ figure
 
 Unlike the acoustickness, we can see that there is a major drop in 1960 for popularity, energy, danceability, loudness, and speechiness. However, we can notice that new songs are less acoustic, with lower speechiness and popularity than the older ones while danceability and loudness have an increase trend with time. on the other hand, energy became slightly stable after 1980.
 
-## Conclusion 
+## Conclusion
 
+## References
 
+1.  "<https://www.kaggle.com/code/fpolcari/spotify-songs-popularity-analysis>"
 
-## References 
-1. "https://www.kaggle.com/code/fpolcari/spotify-songs-popularity-analysis"
+2.  "<https://www.linkedin.com/pulse/spotify-telugu-playlist-analysis-using-r-amrutha-killada/>"
 
-2. "https://www.linkedin.com/pulse/spotify-telugu-playlist-analysis-using-r-amrutha-killada/"
+3.  "<https://github.com/kayamoon/spotify-music-data-analysis>"
 
-3.  "https://github.com/kayamoon/spotify-music-data-analysis"
-
-4.  "https://www.kaggle.com/code/trixietacung/spotify-2010-2019-insight-analysis-with-r/report"
-
+4.  "<https://www.kaggle.com/code/trixietacung/spotify-2010-2019-insight-analysis-with-r/report>"

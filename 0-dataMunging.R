@@ -1,11 +1,10 @@
-<<<<<<< HEAD
-=======
+
 library(tidyverse)
 library(lubridate)
 library(tidytuesdayR)
 library(GGally)
 
->>>>>>> 43168fe44d0fed2ffd5ae2bdb5f2591b7e644142
+
 
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
@@ -36,7 +35,7 @@ songs_duplicates <- spotify_songs[duplicated(spotify_songs$track_id),]
 #The duplicate exist because songs are on different playlists 
  
 #Removing duplicates
-Clean_data <- spotify_songs %>% 
+clean_data <- spotify_songs %>% 
   distinct(track_id,
            .keep_all = TRUE) 
 
@@ -45,20 +44,12 @@ Clean_data <- spotify_songs %>%
 
 
 # Check the structure of the data
-glimpse(Clean_data)
+glimpse(clean_data)
 
 # Check column names
-names(Clean_data)
+names(clean_data)
 
 # Check the different genres
-table(Clean_data$playlist_genre)
+table(clean_data$playlist_genre)
 
-<<<<<<< HEAD
-# Check pairwise plot
-# Exclude some columns to avoid errors related to cardinality
-Clean_data %>%
-  select(!track_id:playlist_subgenre)%>%
-  sggpairs()
-=======
 
->>>>>>> 43168fe44d0fed2ffd5ae2bdb5f2591b7e644142
