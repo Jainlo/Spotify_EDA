@@ -11,7 +11,7 @@ install.packages("GGally")
 library(GGally)
 
 # -------------------------------- #
-source("Documents/1-dataExploration.R")
+source("1-dataExploration.R")
 # -------------------------------- #
 
 # Isolate the 12 features

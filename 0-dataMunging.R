@@ -1,3 +1,4 @@
+
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
 
@@ -31,4 +32,4 @@ table(Clean_data$playlist_genre)
 # Exclude some columns to avoid errors related to cardinality
 Clean_data %>%
   select(!track_id:playlist_subgenre)%>%
-  ggpairs()
+  sggpairs()

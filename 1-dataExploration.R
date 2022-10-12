@@ -8,7 +8,7 @@ library(tidytuesdayR)
 library(ggcorrplot)
 library(ggpubr)
 # -------------------------------- #
-source("Documents/0-dataMunging.R")
+source("0-dataMunging.R")
 # -------------------------------- #
 
 # Top 5 Artists
