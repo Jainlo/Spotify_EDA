@@ -1,8 +1,11 @@
+<<<<<<< HEAD
+=======
 library(tidyverse)
 library(lubridate)
 library(tidytuesdayR)
 library(GGally)
 
+>>>>>>> 43168fe44d0fed2ffd5ae2bdb5f2591b7e644142
 
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
@@ -50,4 +53,12 @@ names(Clean_data)
 # Check the different genres
 table(Clean_data$playlist_genre)
 
+<<<<<<< HEAD
+# Check pairwise plot
+# Exclude some columns to avoid errors related to cardinality
+Clean_data %>%
+  select(!track_id:playlist_subgenre)%>%
+  sggpairs()
+=======
 
+>>>>>>> 43168fe44d0fed2ffd5ae2bdb5f2591b7e644142
