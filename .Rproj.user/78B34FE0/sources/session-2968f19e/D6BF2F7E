@@ -3,17 +3,17 @@
     "path": "~/Documents/Spotify_EDA/0-dataMunging.R",
     "project_path": "0-dataMunging.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "1863687392",
     "contents": "",
     "dirty": false,
     "created": 1665588027819.0,
     "source_on_save": false,
-    "relative_order": 3,
+    "relative_order": 4,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "47,0",
-        "scrollLine": "29"
+        "cursorPosition": "36,0",
+        "scrollLine": "22"
     },
     "folds": "",
     "lastKnownWriteTime": 1665594328,

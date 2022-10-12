@@ -6,12 +6,19 @@ format:
 editor: visual
 ---
 
-```{r echo=FALSE}
+```{r include=FALSE}
 library(tidyverse)
 library(lubridate)
 library(tidytuesdayR)
 library(GGally)
-
+library(ggplot2)
+library(dplyr)
+library(lubridate)
+library(janitor)
+library(tidytuesdayR)
+library(ggcorrplot)
+library(ggridges)
+library(ggpubr)
 ```
 
 ```{r include=FALSE}
@@ -91,8 +98,220 @@ names(spotify_songs)
     sum(duplicated(spotify_songs$track_id))
     ```
 
+## Clean data
+
+```{r include=FALSE}
+#Removing duplicates
+clean_data <- spotify_songs %>% 
+  distinct(track_id,
+           .keep_all = TRUE) 
+```
+
+-   The new data with no duplicates
+
+    ```{r}
+    table(clean_data$playlist_genre)
+    ```
+
+    ```{r}
+    songs_before <-
+      table(spotify_songs$playlist_genre)
+
+    songs_after <-
+      table(clean_data$playlist_genre)
+    songs_b_a <-tibble(songs_before, songs_after)
+    songs_b_a %>% 
+      mutate(genre = names(songs_after)) ->
+      songs_b_a
+
+    songs_b_a %>% 
+      pivot_longer(!genre,) -> songs_b_a
+    songs_b_a$value <- as.numeric(songs_b_a$value)
+
+    songs_b_a %>%  # Try to flip the position of the bars
+      ggplot(aes(x = genre, y = value , fill = name))+
+      geom_bar(stat = "identity", position = 'dodge' )
+    ```
+
 # EDA
+
+## Initial EDA
+
+-   Most popular artists
+
+```{r}
+top_artists <- clean_data %>%
+               group_by(track_artist) %>%
+               summarise(n_apperance = n()) %>%
+               filter(n_apperance > 70) %>%
+               arrange(desc(n_apperance))
+
+top_artists$track_artist <- factor(top_artists$track_artist, levels = top_artists$track_artist [order(top_artists$n_apperance)])
+
+ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
+       geom_bar(stat = "identity", width = 0.6,fill = "pink", color="pink") +
+       labs(title = "Popular Artists", x = "Artists", y = "Number of Appearances in the list") +
+       theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
+       geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
+       coord_flip()
+```
+
+## Initial EDA
+
+-   Most popular albums
+
+    ```{r}
+    top_albums <- clean_data %>%
+                  group_by(track_album_name) %>%
+                  summarise(n_apperance = n()) %>%
+                  filter(n_apperance >= 25) %>%
+                  arrange(desc(n_apperance))
+
+    top_albums$track_album_name <- factor(top_albums$track_album_name, levels = top_albums$track_album_name [order(top_albums$n_apperance)])
+
+    ggplot(top_albums, aes(x = track_album_name, y = n_apperance)) +
+          geom_bar(stat = "identity" , width = 0.6,fill = "pink", color="pink") +
+          labs(title = "Popular Albums", x = "Albums", y = "Number of Apperances in the list") +
+          theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
+          geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
+          coord_flip()
+
+    ```
+
+## Initial EDA
+
+-   Most popular genres
+
+```{r}
+clean_data %>%
+  group_by(playlist_genre)%>%
+    ggplot(aes( x = track_popularity, y = playlist_genre ))+
+    geom_density_ridges()+
+    scale_x_continuous(limits = c(0, 100)) +
+  labs( x = "Popularity", y = "Genre")
+```
+
+## How feature change within genres
+
+```{r}
+# Isolate the 12 features
+clean_data %>%
+  select(playlist_genre, !track_id:playlist_subgenre) -> featuresOnly
+
+# How do features compare between genres
+featuresOnly %>%
+  pivot_longer(!c(playlist_genre), names_to = "features")%>%
+  ggplot(aes(value))+
+  geom_density(aes(color = playlist_genre), alpha = 0.5)+
+  facet_wrap(vars(features), scales="free")
+```
+
+## Latin
+
+-   Latin stands out in danceability and valence.
+
+-   danceability
+
+    ```{r}
+    ggplot(clean_data, aes(x=danceability, y=playlist_genre)) + 
+      geom_boxplot() +
+      geom_boxplot(fill='pink', color="grey")+
+      theme_light()
+    ```
+
+## Latin
+
+-   Valance
+
+    ```{r}
+    ggplot(clean_data, aes(x=valence, y=playlist_genre)) + 
+      geom_boxplot() +
+      geom_boxplot(fill='pink', color="grey")+
+      theme_light()
+    ```
 
 # Hypothesis testing
 
-# 
+## Release Date
+
+-   Is there a relationship between album release date and popularity?
+-   Are features affected by album release date?
+
+```{r fig11, fig.align = "center", out.width = "70%"}
+Y <- clean_data$acousticness
+X <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years <- data.frame(X,Y)
+by_years <- aggregate(Y~X, data = by_years, mean)
+ggplot(by_years, aes(x = X, y = Y)) +
+  geom_line(size=1.4) +
+  labs(title = "Acousticness",
+       x = "Years",
+       y = "Avg. Acousticness") -> g
+```
+
+```{r fig12, fig.align = "center", out.width = "70%"}
+Y1 <- clean_data$loudness
+X1 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years1 <- data.frame(X1,Y1)
+by_years1 <- aggregate(Y1~X1, data = by_years1, mean)
+ggplot(by_years1, aes(x = X1, y = Y1)) +
+  geom_line(size=1.4) +
+  labs(title = "Loudness",
+       x = "Years",
+       y = "Avg. Loudness") -> g1
+
+```
+
+```{r}
+Y2 <- clean_data$danceability
+X2 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years2 <- data.frame(X2,Y2)
+by_years2 <- aggregate(Y2~X2, data = by_years2, mean)
+ggplot(by_years2, aes(x = X2, y = Y2)) +
+  geom_line(size=1.4) +
+  labs(title = "Danceability",
+       x = "Years",
+       y = "Avg. Danceability") -> g2
+```
+
+```{r}
+Y3 <- clean_data$speechiness
+X3 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years3 <- data.frame(X3,Y3)
+by_years3 <- aggregate(Y3~X3, data = by_years3, mean)
+ggplot(by_years3, aes(x = X3, y = Y3)) +
+  geom_line(size=1.4) +
+  labs(title = "Speechiness",
+       x = "Years",
+       y = "Avg. Speechiness") -> g3
+```
+
+```{r}
+Y4 <- clean_data$track_popularity
+X4 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years4 <- data.frame(X4,Y4)
+by_years4 <- aggregate(Y4~X4, data = by_years4, mean)
+ggplot(by_years4, aes(x = X4, y = Y4)) +
+  geom_line(size=1.4) +
+  labs(title = "Popularity",
+       x = "Years",
+       y = "Avg. popularity") -> g4
+```
+
+```{r}
+Y5 <- clean_data$energy
+X5 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years5 <- data.frame(X5,Y5)
+by_years5 <- aggregate(Y5~X5, data = by_years5, mean)
+ggplot(by_years5, aes(x = X5, y = Y5)) +
+  geom_line(size=1.4) +
+  labs(title = "Energy",
+       x = "Years",
+       y = "Avg. Energy") -> g5
+
+```
+
+```{r fig13, fig.align = "center", out.width = "70%"}
+figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
+figure
+```

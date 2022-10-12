@@ -2,4 +2,19 @@
 "0","library(lubridate)"
 "0","library(tidytuesdayR)"
 "0","library(GGally)"
-"0",""
+"0","library(ggplot2)"
+"0","library(dplyr)"
+"0","library(lubridate)"
+"0","library(janitor)"
+"2","
+Attaching package: ‘janitor’
+
+"
+"2","The following objects are masked from ‘package:stats’:
+
+    chisq.test, fisher.test
+
+"
+"0","library(tidytuesdayR)"
+"0","library(ggcorrplot)"
+"0","library(ggpubr)"
