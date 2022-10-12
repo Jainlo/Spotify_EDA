@@ -19,6 +19,7 @@ library(tidytuesdayR)
 library(ggcorrplot)
 library(ggridges)
 library(ggpubr)
+library(plotly)
 ```
 
 ```{r include=FALSE}
@@ -31,6 +32,20 @@ spotify_songs <- tuesdata$spotify_songs
 ```
 
 # Introduction
+
+## Code and Documentation
+
+Version control:
+
+-   Git
+
+-   Github
+
+-   Consistent file structure and naming
+
+Clear and readable plots
+
+Clear and properly commented code
 
 ## Background
 
@@ -336,4 +351,4 @@ The analysis of the Spotify dataset yielded the following results:
 
 -   Energy and acoustics are negativelly correlated.
 
--   Track duration does not havea clear effect on the track popularity
+-   Track duration does not have a clear effect on the track popularity
