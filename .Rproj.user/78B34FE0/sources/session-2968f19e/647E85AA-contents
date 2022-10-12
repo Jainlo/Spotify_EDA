@@ -12,7 +12,7 @@ library(GGally)
 
 ```
 
-```{r echo=FALSE}
+```{r include=FALSE}
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
 source("0-dataMunging.R")
