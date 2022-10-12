@@ -1,10 +1,10 @@
 ---
-  title: "Spotify Exploratory Dataset Analysis"
+title: "Spotify Exploratory Dataset Analysis"
 output: html_document
 date: "2022-10-12"
 ---
   
-  ```{r setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(fig_width =10,echo = TRUE)
 ```
 
