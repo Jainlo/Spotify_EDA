@@ -1,5 +1,5 @@
 ---
-title: "SSH_presentation"
+title: "Spotify Exploratory Dataset Analysis"
 format: 
   revealjs: 
     theme: serif
@@ -19,6 +19,7 @@ library(tidytuesdayR)
 library(ggcorrplot)
 library(ggridges)
 library(ggpubr)
+library(plotly)
 ```
 
 ```{r include=FALSE}
@@ -32,9 +33,23 @@ spotify_songs <- tuesdata$spotify_songs
 
 # Introduction
 
+## Code and Documentation
+
+Version control:
+
+-   Git
+
+-   Github
+
+-   Consistent file structure and naming
+
+Clear and readable plots
+
+Clear and properly commented code
+
 ## Background
 
--   The data was squired through Spotify API in 2020 by TidyTuesday
+-   The data was aquired through Spotify API in 2020 by TidyTuesday
 
 -   The class of the data frame
 
@@ -44,10 +59,9 @@ class(spotify_songs)
 
 -   The number of rows
 
-    ```{r}
-    nrow(spotify_songs)
-
-    ```
+```{r}
+nrow(spotify_songs)
+```
 
 ## The data set
 
@@ -61,9 +75,9 @@ names(spotify_songs)
 
 -   The main genres in the data
 
-    ```{r}
-    table(spotify_songs$playlist_genre)
-    ```
+```{r}
+table(spotify_songs$playlist_genre)
+```
 
 ## Cleaning: NA values
 
@@ -103,29 +117,29 @@ clean_data <- spotify_songs %>%
 
 -   The new data with no duplicates
 
-    ```{r}
-    table(clean_data$playlist_genre)
-    ```
+```{r}
+table(clean_data$playlist_genre)
+```
 
-    ```{r}
-    songs_before <-
-      table(spotify_songs$playlist_genre)
+```{r}
+songs_before <-
+  table(spotify_songs$playlist_genre)
 
-    songs_after <-
-      table(clean_data$playlist_genre)
-    songs_b_a <-tibble(songs_before, songs_after)
-    songs_b_a %>% 
-      mutate(genre = names(songs_after)) ->
-      songs_b_a
+songs_after <-
+  table(clean_data$playlist_genre)
+songs_b_a <-tibble(songs_before, songs_after)
+songs_b_a %>% 
+  mutate(genre = names(songs_after)) ->
+  songs_b_a
 
-    songs_b_a %>% 
-      pivot_longer(!genre,) -> songs_b_a
-    songs_b_a$value <- as.numeric(songs_b_a$value)
+songs_b_a %>% 
+  pivot_longer(!genre,) -> songs_b_a
+songs_b_a$value <- as.numeric(songs_b_a$value)
 
-    songs_b_a %>%  # Try to flip the position of the bars
-      ggplot(aes(x = genre, y = value , fill = name))+
-      geom_bar(stat = "identity", position = 'dodge' )
-    ```
+songs_b_a %>%  # Try to flip the position of the bars
+  ggplot(aes(x = genre, y = value , fill = name))+
+  geom_bar(stat = "identity", position = 'dodge' )
+```
 
 # Exploratory Data Analysis
 
@@ -154,23 +168,22 @@ ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
 
 -   Most popular albums
 
-    ```{r}
-    top_albums <- clean_data %>%
-                  group_by(track_album_name) %>%
-                  summarise(n_apperance = n()) %>%
-                  filter(n_apperance >= 25) %>%
-                  arrange(desc(n_apperance))
+```{r}
+top_albums <- clean_data %>%
+              group_by(track_album_name) %>%
+              summarise(n_apperance = n()) %>%
+              filter(n_apperance >= 25) %>%
+              arrange(desc(n_apperance))
 
-    top_albums$track_album_name <- factor(top_albums$track_album_name, levels = top_albums$track_album_name [order(top_albums$n_apperance)])
+top_albums$track_album_name <- factor(top_albums$track_album_name, levels = top_albums$track_album_name [order(top_albums$n_apperance)])
 
-    ggplot(top_albums, aes(x = track_album_name, y = n_apperance)) +
-          geom_bar(stat = "identity" , width = 0.6,fill = "pink", color="pink") +
-          labs(title = "Popular Albums", x = "Albums", y = "Number of Apperances in the list") +
-          theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
-          geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
-          coord_flip()
-
-    ```
+ggplot(top_albums, aes(x = track_album_name, y = n_apperance)) +
+      geom_bar(stat = "identity" , width = 0.6,fill = "pink", color="pink") +
+      labs(title = "Popular Albums", x = "Albums", y = "Number of Apperances in the list") +
+      theme(plot.title = element_text(size=15, hjust=0, face = "bold"), axis.title = element_text(size=12)) +
+      geom_text(aes(label=n_apperance), hjust=2, size = 3, color = 'white') +
+      coord_flip()
+```
 
 ## Initial Data Exploration
 
@@ -179,7 +192,7 @@ ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
 ```{r}
 clean_data %>%
   group_by(playlist_genre)%>%
-    ggplot(aes( x = track_popularity, y = playlist_genre, color_palette(rickandmorty) ))+
+    ggplot(aes( x = track_popularity, y = playlist_genre, color_palette(pink) ))+
     geom_density_ridges()+
     scale_x_continuous(limits = c(0, 100)) +
   labs( x = "Popularity", y = "Genre")
@@ -209,23 +222,23 @@ ggplotly(featuresPlot)
 
 -   danceability
 
-    ```{r}
-    ggplot(clean_data, aes(x=danceability, y=playlist_genre)) + 
-      geom_boxplot() +
-      geom_boxplot(fill='pink', color="grey")+
-      theme_light()
-    ```
+```{r}
+ggplot(clean_data, aes(x=danceability, y=playlist_genre)) + 
+  geom_boxplot() +
+  geom_boxplot(fill='pink', color="grey")+
+  theme_light()
+```
 
 ## Latin
 
 -   Valance
 
-    ```{r}
-    ggplot(clean_data, aes(x=valence, y=playlist_genre)) + 
-      geom_boxplot() +
-      geom_boxplot(fill='pink', color="grey")+
-      theme_light()
-    ```
+```{r}
+ggplot(clean_data, aes(x=valence, y=playlist_genre)) + 
+  geom_boxplot() +
+  geom_boxplot(fill='pink', color="grey")+
+  theme_light()
+```
 
 ## Release Date
 
@@ -311,6 +324,19 @@ figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
 ```
 
+## Track duration
+
+Does the track duration affect the popularity of the song?
+
+```{r fig14, fig.align = "center", out.width = "70%"}
+clean_data %>%
+  group_by(duration_ms)%>%
+  summarise(popularity = mean(track_popularity))%>%
+  ggplot(aes(cut_number(duration_ms,5), popularity))+
+  geom_col(color="pink", fill="pink")+
+  theme_light()
+```
+
 # Conclusion
 
 The analysis of the Spotify dataset yielded the following results:
@@ -322,3 +348,5 @@ The analysis of the Spotify dataset yielded the following results:
 -   Energy and loudness are positively correlated.
 
 -   Energy and acoustics are negativelly correlated.
+
+-   Track duration does not have a clear effect on the song popularity.

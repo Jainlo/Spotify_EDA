@@ -283,17 +283,34 @@ figure
 
 Unlike the acoustickness, we can see that there is a major drop in 1960 for popularity, energy, danceability, loudness, and speechiness. However, we can notice that new songs are less acoustic, with lower speechiness and popularity than the older ones while danceability and loudness have an increase trend with time. on the other hand, energy became slightly stable after 1980.
 
+## Track duration
+
+1. Does the track duration affect the popularity of the song?
+
+To answer this question we compared the popularity of the songs with the duration after cutting it into intervals to better visualize the data, surprisingly, the song duration does not have a clear effect on the song popularity.
+
+```{r fig14, fig.align = "center", out.width = "70%"}
+clean_data %>%
+  group_by(duration_ms)%>%
+  summarise(popularity = mean(track_popularity))%>%
+  ggplot(aes(cut_number(duration_ms,5), popularity))+
+  geom_col(color="pink", fill="pink")+
+  theme_light()
+```
+
 ## Conclusion
 
 The analysis of the Spotify dataset yielded the following results:
 
-Pop and Latin are the top most popular genres.
+- Pop and Latin are the top most popular genres.
 
-The higher the danceability/ valence, the more positively it correlates to the popularity.
+- The higher the danceability/ valence, the more positively it correlates to the popularity.
 
-Energy and loudness are positively correlated.
+- Energy and loudness are positively correlated.
 
-Energy and acoustics are negativelly correlated.
+- Energy and acoustics are negativelly correlated.
+
+- Track duration does not have a clear effect on the song popularity.
 
 ## References
 
