@@ -1,3 +1,9 @@
+library(tidyverse)
+library(lubridate)
+library(tidytuesdayR)
+library(GGally)
+
+
 # Download all data files
 tuesdata <- tidytuesdayR::tt_load('2020-01-21')
 
@@ -7,16 +13,33 @@ spotify_songs <- tuesdata$spotify_songs
 # Import the data set
 # spotify_songs= read_csv(url("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-01-21/spotify_songs.csv"))
 
-# Check NA values
+#summary of the data set
 summary(spotify_songs)
-which(is.na(spotify_songs), arr.ind=TRUE)
 
-# Getting  the names of the R data frame columns that contain missing values.
-spotify_songs1 <- as.data.frame(cbind(lapply(lapply(spotify_songs, is.na), sum)))
-rownames(subset(spotify_songs1, spotify_songs1$V1 != 0))
+# Check NA values and print them to the console
+spotify_songs[rowSums(is.na(spotify_songs)) > 0, ]
+# There is no need to remove them since the only thing is missing is the track name
+# , track artist and album name
 
-# Removing and keeping the clean data without NA values
-Clean_data=na.omit(spotify_songs)
+# Check for duplicate songs' names within the data
+sum(duplicated(spotify_songs$track_name))
+
+# The number is too large
+# Check for duplicates bu id:
+sum(duplicated(spotify_songs$track_id))
+
+#Saving the duplicates to a data frame to investigate 
+songs_duplicates <- spotify_songs[duplicated(spotify_songs$track_id),] 
+#The duplicate exist because songs are on different playlists 
+ 
+#Removing duplicates
+Clean_data <- spotify_songs %>% 
+  distinct(track_name_artist,
+           .keep_all = TRUE) 
+
+
+
+
 
 # Check the structure of the data
 glimpse(Clean_data)
@@ -27,8 +50,4 @@ names(Clean_data)
 # Check the different genres
 table(Clean_data$playlist_genre)
 
-# Check pairwise plot
-# Exclude some columns to avoid errors related to cardinality
-Clean_data %>%
-  select(!track_id:playlist_subgenre)%>%
-  ggpairs()
+
