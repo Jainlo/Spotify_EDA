@@ -220,7 +220,7 @@ ggplotly(featuresPlot)
 
 ## Latin
 
--   Latin stands out in danceability and valence.
+Latin stands out in danceability and valence.
 
 -   danceability
 
@@ -326,11 +326,54 @@ figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
 ```
 
+## Correlation
+
+What's the correlation between energy, loudness and acousticness?
+
+-   Positive correlation between energy and loudness
+
+-   Negative correlation between energy and acousticness
+
+```{r fig14, fig.align = "center", out.width = "70%"}
+clean_data %>%
+  dplyr::select(where(is.numeric)) -> clean_data_numeric
+corr <- round(cor(clean_data_numeric),3)
+ggcorrplot(corr, hc.order = TRUE, type = "lower", lab = TRUE)
+```
+
+## Correlation
+
+-   Does this correlation exist in a specific genre?
+
+```{r fig15, fig.align = "center", out.width = "70%"}
+clean_data%>%
+  ggplot(aes(x=loudness,y=energy))+
+  geom_point()+
+  ggtitle("Loudness/Energy")+
+  theme_light()+
+  geom_smooth(se=FALSE)+
+  facet_wrap(~playlist_genre)
+```
+
+## Correlation
+
+-   Does this correlation exist in a specific genre?
+
+```{r fig16, fig.align = "center", out.width = "70%"}
+clean_data%>%
+  ggplot(aes(x=acousticness,y=energy))+
+  geom_point()+
+  ggtitle("Acousticness/Energy")+
+  theme_light()+
+  geom_smooth(se=FALSE)+
+  facet_wrap(~playlist_genre)
+```
+
 ## Track duration
 
 Does the track duration affect the popularity of the song?
 
-```{r fig14, fig.align = "center", out.width = "70%"}
+```{r fig17, fig.align = "center", out.width = "70%"}
 clean_data %>%
   group_by(duration_ms)%>%
   summarise(popularity = mean(track_popularity))%>%
