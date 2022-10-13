@@ -41,7 +41,7 @@ Version control:
 
 -   Github
 
--   Consistent file structure and naming
+-   Consistent file structure and naming (e.g., 0-dataMunging)
 
 Clear and readable plots
 
@@ -121,7 +121,7 @@ clean_data <- spotify_songs %>%
 table(clean_data$playlist_genre)
 ```
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 songs_before <-
   table(spotify_songs$playlist_genre)
 
@@ -147,7 +147,7 @@ songs_b_a %>%  # Try to flip the position of the bars
 
 -   Most popular artists
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 top_artists <- clean_data %>%
                group_by(track_artist) %>%
                summarise(n_apperance = n()) %>%
@@ -168,7 +168,7 @@ ggplot(top_artists, aes(x = track_artist, y = n_apperance)) +
 
 -   Most popular albums
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 top_albums <- clean_data %>%
               group_by(track_album_name) %>%
               summarise(n_apperance = n()) %>%
@@ -189,7 +189,7 @@ ggplot(top_albums, aes(x = track_album_name, y = n_apperance)) +
 
 -   Most popular genres
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 clean_data %>%
   group_by(playlist_genre)%>%
     ggplot(aes( x = track_popularity, y = playlist_genre, color_palette(pink) ))+
@@ -202,7 +202,7 @@ clean_data %>%
 
 How features change within genres
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 # Isolate the 12 features
 clean_data %>%
   select(playlist_genre, !track_id:playlist_subgenre) -> featuresOnly
@@ -222,7 +222,7 @@ ggplotly(featuresPlot)
 
 -   danceability
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 ggplot(clean_data, aes(x=danceability, y=playlist_genre)) + 
   geom_boxplot() +
   geom_boxplot(fill='pink', color="grey")+
@@ -233,7 +233,7 @@ ggplot(clean_data, aes(x=danceability, y=playlist_genre)) +
 
 -   Valance
 
-```{r}
+```{r fig.align = "center", out.width = "70%"}
 ggplot(clean_data, aes(x=valence, y=playlist_genre)) + 
   geom_boxplot() +
   geom_boxplot(fill='pink', color="grey")+
@@ -245,7 +245,7 @@ ggplot(clean_data, aes(x=valence, y=playlist_genre)) +
 -   Is there a relationship between album release date and popularity?
 -   Are features affected by album release date?
 
-```{r fig11, fig.align = "center", out.width = "70%"}
+```{r}
 Y <- clean_data$acousticness
 X <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
 by_years <- data.frame(X,Y)
@@ -257,7 +257,7 @@ ggplot(by_years, aes(x = X, y = Y)) +
        y = "Avg. Acousticness") -> g
 ```
 
-```{r fig12, fig.align = "center", out.width = "70%"}
+```{r}
 Y1 <- clean_data$loudness
 X1 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
 by_years1 <- data.frame(X1,Y1)
@@ -319,16 +319,60 @@ ggplot(by_years5, aes(x = X5, y = Y5)) +
 
 ```
 
-```{r fig13, fig.align = "center", out.width = "70%"}
+```{r fig.align = "center", out.width = "70%"}
 figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
+```
+
+## Correlation
+
+What's the correlation between energy, loudness and acousticness?
+
+-   Positive correlation between energy and loudness
+
+-   Negative correlation between energy and acousticness
+
+```{r fig.align = "center", out.width = "70%"}
+# Select only numerical variables
+clean_data %>%
+  dplyr::select(where(is.numeric)) -> clean_data_numeric
+corr <- round(cor(clean_data_numeric),3)
+ggcorrplot(corr, hc.order = TRUE, type = "lower", lab = TRUE)
+```
+
+## Correlation
+
+-   Does the correlation exist in a specific genre
+
+```{r fig.align = "center", out.width = "70%"}
+clean_data%>%
+  ggplot(aes(x=loudness,y=energy))+
+  geom_point()+
+  ggtitle("Loudness/Energy")+
+  theme_light()+
+  geom_smooth(se=FALSE)+
+  facet_wrap(~playlist_genre)
+```
+
+## Correlation
+
+-   Does the correlation exist in a specific genre
+
+```{r fig.align = "center", out.width = "70%"}
+clean_data%>%
+  ggplot(aes(x=acousticness,y=energy))+
+  geom_point()+
+  ggtitle("Acousticness/Energy")+
+  theme_light()+
+  geom_smooth(se=FALSE)+
+  facet_wrap(~playlist_genre)
 ```
 
 ## Track duration
 
 Does the track duration affect the popularity of the song?
 
-```{r fig14, fig.align = "center", out.width = "70%"}
+```{r fig.align = "center", out.width = "70%"}
 clean_data %>%
   group_by(duration_ms)%>%
   summarise(popularity = mean(track_popularity))%>%
