@@ -41,9 +41,9 @@ Version control:
 
 -   Github
 
--   Consistent file structure and naming
+-   Consistent file structure and naming (e.g., 0-dataMunging)
 
-Clear and readable plots
+Github page that includes all the files
 
 Clear and properly commented code
 
