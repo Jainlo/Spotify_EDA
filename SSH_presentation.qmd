@@ -95,17 +95,33 @@ songs_na %>%
 
 ## Cleaning: Duplicates
 
--   Songs that have the same name
-
-```{r}
-sum(duplicated(spotify_songs$track_name))
-```
-
 -   Songs that have the same ID
 
 ```{r}
 sum(duplicated(spotify_songs$track_id))
 ```
+
+-   Songs are duplicated because they are on multiple playlists
+
+-   Since the were not concerned with how many playlists a song is on, removing the duplicate is justified.
+
+## Ordinals variable
+
+-   the class of "Key" and "Mode" is numerical
+
+    ```{r}
+    class(spotify_songs$key)
+    class(spotify_songs$mode)
+    ```
+
+-   However, they should be categorical variables with different levels
+
+    ```{r}
+    spotify_songs$mode <- as_factor(spotify_songs$mode)
+    spotify_songs$key  <- as_factor(spotify_songs$key)
+    class(spotify_songs$key)
+    class(spotify_songs$mode)
+    ```
 
 ## Clean data
 
@@ -137,7 +153,7 @@ clean_data <- spotify_songs %>%
       pivot_longer(!genre,) -> songs_b_a
     songs_b_a$value <- as.numeric(songs_b_a$value)
 
-    songs_b_a %>%  # Try to flip the position of the bars
+    songs_b_a %>% 
       ggplot(aes(x = genre, y = value , fill = name))+
       geom_bar(stat = "identity", position = 'dodge' )
     ```
@@ -207,7 +223,9 @@ How features change within genres
 ```{r}
 # Isolate the 12 features
 clean_data %>%
-  select(playlist_genre, !track_id:playlist_subgenre) -> featuresOnly
+  select(playlist_genre, !track_id:playlist_subgenre) %>% 
+  select(-mode, -key) ->
+  featuresOnly
 
 # How do features compare between genres
 featuresOnly %>%

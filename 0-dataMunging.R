@@ -33,7 +33,14 @@ sum(duplicated(spotify_songs$track_id))
 #Saving the duplicates to a data frame to investigate 
 songs_duplicates <- spotify_songs[duplicated(spotify_songs$track_id),] 
 #The duplicate exist because songs are on different playlists 
- 
+
+#changing the class of the key and mode
+spotify_songs$mode <- as_factor(spotify_songs$mode)
+spotify_songs$key  <- as_factor(spotify_songs$key)
+class(spotify_songs$key)
+class(spotify_songs$mode)
+
+
 #Removing duplicates
 clean_data <- spotify_songs %>% 
   distinct(track_id,
