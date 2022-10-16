@@ -1,0 +1,7 @@
+- According to duplicate, we need more explanation where the duplicate exactly.
+
+We need to get a clarification on whether duplicate means songs with the same name but different artist or songs with the same name and the same artist but different version of the song.
+
+- According to the "release date" slide, there was no clear and only-one hypothesis. There were several questions. The question about the relationship between album release and popularity seemed to be their main question. However, this question was not been addressed in the conclusion. We hoped that their main question would be something like "(there is)/(there is no) relationship between the album release and popularity with a clear graph showing time in the x-axes and popularity in the y-axes
+
+- Initial data exploration: for Most popular artist and albums they can use different kind of data visualization to be more clearer
