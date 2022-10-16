@@ -22,6 +22,10 @@ library(janitor)
 library(tidytuesdayR)
 library(ggcorrplot)
 library(ggpubr)
+install.packages("reactable")
+library(reactable)
+install.packages("ggforce")
+library(ggforce)
 ```
 
 ```{r include=FALSE, message=FALSE}
@@ -103,7 +107,7 @@ clean_data %>%
 
 After initial exploration of the data, we came up with additional questions:
   
-  ### Popularity
+### Popularity
   
   1.  Are there any features that could have influence on the popularity of Latin?
   
@@ -223,7 +227,7 @@ ggplot(by_years1, aes(x = X1, y = Y1)) +
   geom_line(size=1.4) +
   labs(title = "Loudness",
        x = "Years",
-       y = "Avg. Loudness") -> g1
+       y = "Avg. Loudness")-> g1
 
 ```
 
@@ -248,7 +252,7 @@ ggplot(by_years3, aes(x = X3, y = Y3)) +
   geom_line(size=1.4) +
   labs(title = "Speechiness",
        x = "Years",
-       y = "Avg. Speechiness") -> g3
+       y = "Avg. Speechiness")-> g3
 ```
 
 ```{r}
@@ -260,7 +264,7 @@ ggplot(by_years4, aes(x = X4, y = Y4)) +
   geom_line(size=1.4) +
   labs(title = "Popularity",
        x = "Years",
-       y = "Avg. popularity") -> g4
+       y = "Avg. popularity")-> g4
 ```
 
 ```{r}
@@ -272,7 +276,7 @@ ggplot(by_years5, aes(x = X5, y = Y5)) +
   geom_line(size=1.4) +
   labs(title = "Energy",
        x = "Years",
-       y = "Avg. Energy") -> g5
+       y = "Avg. Energy")-> g5
 
 ```
 
@@ -281,7 +285,112 @@ figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
 ```
 
-Unlike the acoustickness, we can see that there is a major drop in 1960 for popularity, energy, danceability, loudness, and speechiness. However, we can notice that new songs are less acoustic, with lower speechiness and popularity than the older ones while danceability and loudness have an increase trend with time. on the other hand, energy became slightly stable after 1980.
+
+Unlike the acousticness, we can see that there is a major drop in 1960 for popularity, energy, danceability, loudness, and speechiness. However, we can notice that new songs are less acoustic, with lower speechiness and popularity than the older ones while danceability and loudness have an increase trend with time. on the other hand, energy became slightly stable after 1980.
+
+To Further invistigate the major drops, we zoomed in on years between 1960 and 1980
+
+```{r fig14, fig.align = "center", out.width = "70%", echo=FALSE}
+Y <- clean_data$acousticness
+X <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years <- data.frame(X,Y)
+by_years <- aggregate(Y~X, data = by_years, mean)
+ggplot(by_years, aes(x = X, y = Y)) +
+  geom_line(size=1.4) +
+  labs(title = "Acousticness",
+       x = "Years",
+       y = "Avg. Acousticness") +
+  facet_zoom(xlim = c(1960, 1980))-> g
+```
+
+```{r fig15, fig.align = "center", out.width = "70%", echo=FALSE}
+Y1 <- clean_data$loudness
+X1 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years1 <- data.frame(X1,Y1)
+by_years1 <- aggregate(Y1~X1, data = by_years1, mean)
+ggplot(by_years1, aes(x = X1, y = Y1)) +
+  geom_line(size=1.4) +
+  labs(title = "Loudness",
+       x = "Years",
+       y = "Avg. Loudness") +
+  facet_zoom(xlim = c(1960, 1980))-> g1
+
+```
+
+```{r echo=FALSE}
+Y2 <- clean_data$danceability
+X2 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years2 <- data.frame(X2,Y2)
+by_years2 <- aggregate(Y2~X2, data = by_years2, mean)
+ggplot(by_years2, aes(x = X2, y = Y2)) +
+  geom_line(size=1.4) +
+  labs(title = "Danceability",
+       x = "Years",
+       y = "Avg. Danceability") +
+  facet_zoom(xlim = c(1960, 1980))-> g2
+```
+
+```{r echo=FALSE}
+Y3 <- clean_data$speechiness
+X3 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years3 <- data.frame(X3,Y3)
+by_years3 <- aggregate(Y3~X3, data = by_years3, mean)
+ggplot(by_years3, aes(x = X3, y = Y3)) +
+  geom_line(size=1.4) +
+  labs(title = "Speechiness",
+       x = "Years",
+       y = "Avg. Speechiness") +
+  facet_zoom(xlim = c(1960, 1980))-> g3
+```
+
+```{r echo=FALSE}
+Y4 <- clean_data$track_popularity
+X4 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years4 <- data.frame(X4,Y4)
+by_years4 <- aggregate(Y4~X4, data = by_years4, mean)
+ggplot(by_years4, aes(x = X4, y = Y4)) +
+  geom_line(size=1.4) +
+  labs(title = "Popularity",
+       x = "Years",
+       y = "Avg. popularity") +
+  facet_zoom(xlim = c(1960, 1980))-> g4
+```
+
+```{r echo=FALSE}
+Y5 <- clean_data$energy
+X5 <- as.numeric(substr(clean_data$track_album_release_date, 1,4))
+by_years5 <- data.frame(X5,Y5)
+by_years5 <- aggregate(Y5~X5, data = by_years5, mean)
+ggplot(by_years5, aes(x = X5, y = Y5)) +
+  geom_line(size=1.4) +
+  labs(title = "Energy",
+       x = "Years",
+       y = "Avg. Energy") +
+  facet_zoom(xlim = c(1960, 1980))-> g5
+
+```
+
+```{r fig16, fig.align = "center", out.width = "70%", echo=FALSE}
+figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
+figure
+```
+
+Which introduces another question: Is the huge dip in the plot due to the small number of observations around the year 1960? In the table below we can see number of track albums released in each year suggesting that indeed the massive dips in the plot are caused by small number of observations around the year 1960.  
+```{r echo=FALSE}
+clean_data%>%
+  summarise(as.numeric(substr(clean_data$track_album_release_date, 1,4))) -> list_of_years
+table(list_of_years) -> list_of_years
+as.data.frame(list_of_years) -> list_of_years
+colnames(list_of_years) <- c("Release year", "Number of track Albums")
+reactable(list_of_years)
+```
+
+The massive difference in number of observations per year is also clear in the bar plot below
+```{r fig17, fig.align = "center", out.width = "70%", echo=FALSE}
+x_tibble=as_tibble(as.numeric(substr(clean_data$track_album_release_date, 1,4)))
+ggplot(x_tibble, aes(value))+
+  geom_bar()
+```
 
 ## Track duration
 
@@ -289,7 +398,7 @@ Unlike the acoustickness, we can see that there is a major drop in 1960 for popu
 
 To answer this question we compared the popularity of the songs with the duration after cutting it into intervals to better visualize the data, surprisingly, the song duration does not have a clear effect on the song popularity.
 
-```{r fig14, fig.align = "center", out.width = "70%"}
+```{r fig18, fig.align = "center", out.width = "70%"}
 clean_data %>%
   group_by(duration_ms)%>%
   summarise(popularity = mean(track_popularity))%>%
@@ -310,7 +419,9 @@ The analysis of the Spotify dataset yielded the following results:
 
 - Energy and acoustics are negativelly correlated.
 
-- Track duration does not have a clear effect on the song popularity.
+- Release date does not have a clear effect on the track popularity.
+
+- Track duration does not have a clear effect on the track popularity.
 
 ## References
 

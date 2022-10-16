@@ -20,6 +20,8 @@ library(ggcorrplot)
 library(ggridges)
 library(ggpubr)
 library(plotly)
+install.packages("ggforce")
+library(ggforce)
 ```
 
 ```{r include=FALSE}
@@ -256,7 +258,8 @@ ggplot(by_years, aes(x = X, y = Y)) +
   geom_line(size=1.4) +
   labs(title = "Acousticness",
        x = "Years",
-       y = "Avg. Acousticness") -> g
+       y = "Avg. Acousticness") +
+  facet_zoom(xlim = c(1960, 1980))-> g
 ```
 
 ```{r fig12, fig.align = "center", out.width = "70%"}
@@ -268,7 +271,8 @@ ggplot(by_years1, aes(x = X1, y = Y1)) +
   geom_line(size=1.4) +
   labs(title = "Loudness",
        x = "Years",
-       y = "Avg. Loudness") -> g1
+       y = "Avg. Loudness") +
+  facet_zoom(xlim = c(1960, 1980))-> g1
 
 ```
 
@@ -281,7 +285,8 @@ ggplot(by_years2, aes(x = X2, y = Y2)) +
   geom_line(size=1.4) +
   labs(title = "Danceability",
        x = "Years",
-       y = "Avg. Danceability") -> g2
+       y = "Avg. Danceability") +
+  facet_zoom(xlim = c(1960, 1980))-> g2
 ```
 
 ```{r}
@@ -293,7 +298,8 @@ ggplot(by_years3, aes(x = X3, y = Y3)) +
   geom_line(size=1.4) +
   labs(title = "Speechiness",
        x = "Years",
-       y = "Avg. Speechiness") -> g3
+       y = "Avg. Speechiness") +
+  facet_zoom(xlim = c(1960, 1980))-> g3
 ```
 
 ```{r}
@@ -305,7 +311,8 @@ ggplot(by_years4, aes(x = X4, y = Y4)) +
   geom_line(size=1.4) +
   labs(title = "Popularity",
        x = "Years",
-       y = "Avg. popularity") -> g4
+       y = "Avg. popularity") +
+  facet_zoom(xlim = c(1960, 1980))-> g4
 ```
 
 ```{r}
@@ -317,13 +324,27 @@ ggplot(by_years5, aes(x = X5, y = Y5)) +
   geom_line(size=1.4) +
   labs(title = "Energy",
        x = "Years",
-       y = "Avg. Energy") -> g5
+       y = "Avg. Energy") +
+  facet_zoom(xlim = c(1960, 1980))-> g5
 
 ```
 
 ```{r fig13, fig.align = "center", out.width = "70%"}
 figure <- ggarrange(g, g1, g2,g3, g4,g5, ncol = 3, nrow = 2)
 figure
+```
+
+## Release Date
+
+The massive dips in the plot are caused by small number of observations around the year 1960 which is clear in the bar plot below.
+
+```{r fig14, fig.align = "center", out.width = "70%"}
+
+x_tibble=as_tibble(as.numeric(substr(clean_data$track_album_release_date, 1,4)))
+ggplot(x_tibble, aes(value))+
+  geom_bar()
+
+
 ```
 
 ## Correlation
@@ -334,7 +355,7 @@ What's the correlation between energy, loudness and acousticness?
 
 -   Negative correlation between energy and acousticness
 
-```{r fig14, fig.align = "center", out.width = "70%"}
+```{r fig15, fig.align = "center", out.width = "70%"}
 clean_data %>%
   dplyr::select(where(is.numeric)) -> clean_data_numeric
 corr <- round(cor(clean_data_numeric),3)
@@ -345,7 +366,7 @@ ggcorrplot(corr, hc.order = TRUE, type = "lower", lab = TRUE)
 
 -   Does this correlation exist in a specific genre?
 
-```{r fig15, fig.align = "center", out.width = "70%"}
+```{r fig16, fig.align = "center", out.width = "70%"}
 clean_data%>%
   ggplot(aes(x=loudness,y=energy))+
   geom_point()+
@@ -359,7 +380,7 @@ clean_data%>%
 
 -   Does this correlation exist in a specific genre?
 
-```{r fig16, fig.align = "center", out.width = "70%"}
+```{r fig17, fig.align = "center", out.width = "70%"}
 clean_data%>%
   ggplot(aes(x=acousticness,y=energy))+
   geom_point()+
@@ -373,7 +394,7 @@ clean_data%>%
 
 Does the track duration affect the popularity of the song?
 
-```{r fig17, fig.align = "center", out.width = "70%"}
+```{r fig18, fig.align = "center", out.width = "70%"}
 clean_data %>%
   group_by(duration_ms)%>%
   summarise(popularity = mean(track_popularity))%>%
@@ -384,8 +405,6 @@ clean_data %>%
 
 # Conclusion
 
-The analysis of the Spotify dataset yielded the following results:
-
 -   Pop and Latin are the top most popular genres.
 
 -   The higher the danceability/ valence, the more positively it correlates to the popularity.
@@ -393,5 +412,7 @@ The analysis of the Spotify dataset yielded the following results:
 -   Energy and loudness are positively correlated.
 
 -   Energy and acoustics are negativelly correlated.
+
+-   Release date does not have a clear effect on the track popularity.
 
 -   Track duration does not have a clear effect on the track popularity
